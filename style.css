@@ -12,7 +12,6 @@ body {
   min-height: 100vh;
   overflow: hidden;
 }
-
 .poker-table {
   width: 90vw;
   max-width: 700px;
@@ -21,6 +20,5 @@ body {
   background-color: #1b5e20;
   border-radius: 1000px;    
   border: 12px solid #3e2723; 
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5), 
-              inset 0 0 50px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5), inset 0 0 50px rgba(0, 0, 0, 0.4);
 }
