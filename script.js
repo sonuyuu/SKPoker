@@ -3,7 +3,7 @@ function listenToRoom() {
     const data = snapshot.val();
     if (!data) return;
 
-    const countPlayers = data.players ? Object.keys(room.players).length : 0; // Сверяем игроков
+    const countPlayers = data.players ? Object.keys(data.players).length : 0;
     const isMyTurn = data.currentTurn === myPlayerKey && data.pokerStage !== 'ended';
     const currentMaxBet = data.currentMaxBet || 0;
     const myCurrentBet = (data.players[myPlayerKey] && data.players[myPlayerKey].bet) || 0;
@@ -13,7 +13,7 @@ function listenToRoom() {
     if (btnVa) btnVa.disabled = !isMyTurn;
     if (btnPas) btnPas.disabled = !isMyTurn;
     
-    // Новая стабильная логика Чек / Колл
+    // Переключение Кнопки Чек / Колл
     if (btnCes) {
       btnCes.disabled = !isMyTurn;
       if (needToCall > 0) {
@@ -38,13 +38,28 @@ function listenToRoom() {
       infoBlock.innerHTML = `
         <h2>Информация (${stageTitle})</h2>
         <p>Статус: ${turnText}</p>
-        <p>Игроки в игре: ${data.playersInGame || Object.keys(data.players).length}</p>
+        <p>Игроки в игре: ${data.playersInGame || countPlayers}</p>
         <p>Банк: ${data.bank || 0}sk</p>
         <p>Ваш баланс: ${myCurrentChips}sk</p>
       `;
+
+      // Динамическая настройка ползунка ставки (Рэйза)
       if (betRange) {
+        if (needToCall > 0) {
+          // Минимальный рэйз должен быть как минимум в два раза больше текущей ставки на столе
+          const minRaise = currentMaxBet * 2 - myCurrentBet;
+          betRange.min = Math.min(minRaise, myCurrentChips);
+          betRange.value = Math.min(minRaise, myCurrentChips);
+        } else {
+          betRange.min = Math.min(5, myCurrentChips);
+          betRange.value = Math.min(5, myCurrentChips);
+        }
         betRange.max = myCurrentChips;
         betRange.disabled = myCurrentChips <= 0 || !isMyTurn;
+        
+        if (betAmountDisplay) {
+          betAmountDisplay.textContent = `Ставка: ${betRange.value}sk`;
+        }
       }
     }
 
@@ -75,7 +90,7 @@ function listenToRoom() {
       `;
     }
 
-    // 4. Показ аватарок игроков — ТЕПЕРЬ ОТОБРАЖАЕТ ТВОЙ НИК, А НЕ "ВЫ"
+    // 4. Показ аватарок игроков — СТРОГО ИЗ БАЗЫ ДАННЫХ (БЕЗ "ВЫ")
     const positions = ['van', 'ty', 'fri', 'fo'];
     positions.forEach(pos => {
       const pBlock = document.querySelector('.' + pos);
@@ -86,7 +101,7 @@ function listenToRoom() {
           const isTurn = data.currentTurn === pos && data.pokerStage !== 'ended';
           const hasFolded = !data.players[pos].cards;
           
-          // Изменено тут: вместо 'Вы' всегда пишем имя из базы данных data.players[pos].name
+          // Отображаем строго реальное имя, сохраненное в Firebase
           pBlock.innerHTML = `
             <span style="color: ${isTurn ? '#00ff00' : '#fff'}; font-weight: bold; text-decoration: ${hasFolded ? 'line-through' : 'none'}">
               ${data.players[pos].name}
@@ -101,7 +116,7 @@ function listenToRoom() {
   });
 }
 
-// Переписанный обработчик кнопки Чек / Колл (исправлены сбои)
+// Кнопка Чек / Колл
 if (btnCes) {
   btnCes.addEventListener('click', () => {
     const roomRef = database.ref('rooms/' + currentRoomId);
@@ -117,14 +132,14 @@ if (btnCes) {
       let updates = {};
 
       if (needToCall > 0) {
-        // Если это Колл (уравнивание)
+        // Логика Колла (Уравниваем ставку)
         const callAmount = needToCall > myChips ? myChips : needToCall;
         updates[`bank`] = data.bank + callAmount;
         updates[`players/${myPlayerKey}/chips`] = myChips - callAmount;
         updates[`players/${myPlayerKey}/bet`] = currentBet + callAmount;
       } 
       
-      // Отправляем атомарный апдейт в Firebase, затем передаем ход
+      // Сначала отправляем изменения, затем передаем ход
       roomRef.update(updates).then(() => {
         roomRef.get().then((freshSnapshot) => {
           nextTurn(roomRef, freshSnapshot.val());
@@ -134,7 +149,7 @@ if (btnCes) {
   });
 }
 
-// Переписанный обработчик кнопки Ставка (исправлены сбои)
+// Кнопка Сделать Ставку (Повысить / Рэйз)
 if (btnChec) {
   btnChec.addEventListener('click', () => {
     const roomRef = database.ref('rooms/' + currentRoomId);
@@ -146,7 +161,9 @@ if (btnChec) {
       const currentBet = data.players[myPlayerKey].bet || 0;
       const chosenBet = parseInt(betRange.value) || 0;
 
-      if (chosenBet > 0 && myChips >= chosenBet) {
+      // Валидация: ставка должна покрывать как минимум сумму Колла
+      const currentMaxBet = data.currentMaxBet || 0;
+      if (chosenBet > 0 && myChips >= chosenBet && (currentBet + chosenBet) >= currentMaxBet) {
         const totalNewBet = currentBet + chosenBet;
         let updates = {
           bank: data.bank + chosenBet,
@@ -154,7 +171,7 @@ if (btnChec) {
           [`players/${myPlayerKey}/bet`]: totalNewBet
         };
 
-        if (totalNewBet > (data.currentMaxBet || 0)) {
+        if (totalNewBet > currentMaxBet) {
           updates[`currentMaxBet`] = totalNewBet;
         }
 
