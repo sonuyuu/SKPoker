@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Главная страница</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .lobby-list {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+    }
+    #start-match-btn {
+      display: block;
+      margin: 15px auto 0 auto !important;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="menu-screen" class="screen">
+    <div class="menu-wrapper">
+      <h1>SKPoker</h1>
+      
+      <div class="menu-block">
+        <input type="text" id="username-input" placeholder="Введи свой ник..." maxlength="12">
+        <input type="text" id="room-name-input" placeholder="Название комнаты..." maxlength="20">
+      </div>
+
+      <div class="menu-buttons">
+        <button id="create-game-btn" class="menu-btn">Создать игру</button>
+        <button id="show-rules-btn" class="menu-btn">Комбинации карт</button>
+      </div>
+
+      <div class="lobby-list">
+        <h3>Доступные игры:</h3>
+      </div>
+
+      <button id="open-admin-btn" style="background: none; border: none; color: #333; margin-top: 30px; font-size: 11px; cursor: pointer; -webkit-tap-highlight-color: transparent;">Админ-панель</button>
+    </div>
+  </div>
+
+  <div id="admin-screen" class="screen" style="display: none;">
+    <div class="menu-wrapper">
+      <h2>Панель администратора</h2>
+      <div id="admin-rooms-list" style="width: 100%; max-height: 300px; overflow-y: auto; margin-bottom: 20px;">
+      </div>
+      <button id="close-admin-btn" class="menu-btn">Назад в меню</button>
+    </div>
+  </div>
+
+  <div id="rules-screen" class="screen" style="display: none;">
+    <div class="rules-wrapper">
+      <h2>Комбинации карт</h2>
+      <div class="rules-list">
+        <div class="rule-item"><span>Рояль-Флеш</span><span>A♦ K♦ Q♦ J♦ 10♦</span></div>
+        <div class="rule-item"><span>Стрит-Флеш</span><span>9♠ 8♠ 7♠ 6♠ 5♠</span></div>
+        <div class="rule-item"><span>Каре</span><span>A♣ A♦ A♠ A♥ K♣</span></div>
+        <div class="rule-item"><span>Фулл-Хаус</span><span>K♣ K♦ K♠ 10♥ 10♦</span></div>
+        <div class="rule-item"><span>Флеш</span><span>A♥ J♥ 8♥ 6♥ 2♥</span></div>
+        <div class="rule-item"><span>Стрит</span><span>5♣ 6♦ 7♠ 8♥ 9♣</span></div>
+        <div class="rule-item"><span>Сет (Тройка)</span><span>Q♣ Q♦ Q♠ 4♥ 2♣</span></div>
+        <div class="rule-item"><span>Две пары</span><span>J♣ J♠ 4♥ 4♦ K♠</span></div>
+        <div class="rule-item"><span>Пара</span><span>10♣ 10♦ A♠ K♥ 3♣</span></div>
+        <div class="rule-item"><span>Старшая карта</span><span>A♣ J♦ 8♠ 5♥ 2♣</span></div>
+      </div>
+      <button id="close-rules-btn" class="menu-btn">Назад в меню</button>
+    </div>
+  </div>
+
+  <div id="game-screen" class="screen" style="display: none;">
+    
+    <div class="info">
+      <h2>Информация</h2>
+      <p>Игроки в игре: --</p>
+      <p>Банк: 0sk</p>
+      <p>Ваш баланс: 100sk</p>
+    </div>
+
+    <div class="avatar">
+      <div class="van" style="display: none;"></div>
+      <div class="ty" style="display: none;"></div>
+      <div class="fri" style="display: none;"></div>
+      <div class="fo" style="display: none;"></div>
+      
+      <div id="table-cards-display"></div>
+    </div>
+
+    <div class="cardpp">
+      </div>
+
+    <div class="bet-slider-container">
+      <span id="bet-amount-display">Ставка: 0sk</span>
+      <input type="range" id="bet-range" min="0" max="100" value="0">
+    </div>
+
+    <div class="game-buttons-container">
+      <button class="chec">Ставка</button>
+      <button class="va">Ва-Банк</button>
+      <button class="pas">Пас</button>
+      <button class="ces">Чек</button>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

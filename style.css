@@ -1,0 +1,371 @@
+* {
+  margin: 0px;
+  padding: 0px;
+  box-sizing: border-box;
+}
+body {
+  background-color: #1c1c1c;
+  font-family: sans-serif;
+  display: flex;
+  justify-content: center;
+}
+.screen {
+  width: 100%;
+  max-width: 400px; /* Ограничиваем ширину под мобильный экран */
+  min-height: 100vh;
+  position: relative;
+  padding-bottom: 20px;
+}
+.menu-wrapper, .rules-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 20px;
+  color: #fff;
+}
+h1 {
+  margin-bottom: 30px;
+  font-size: 28px;
+}
+h2 {
+  margin-bottom: 20px;
+}
+.menu-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+#username-input {
+  background-color: #2c2c2c;
+  border: 4px solid #015b01;
+  border-radius: 15px;
+  color: #fff;
+  padding: 12px;
+  width: 260px;
+  font-size: 16px;
+  text-align: center;
+  outline: none;
+  margin-bottom: 0px; /* Убрали, так как теперь отступ регулирует нижнее поле */
+}
+
+/* Исправленное поле ввода для названия комнаты */
+#room-name-input {
+  background-color: #2c2c2c;
+  border: 4px solid #015b01;
+  border-radius: 15px;
+  color: #fff;
+  padding: 12px;
+  width: 260px; /* Теперь ширина точно такая же, как у никнейма */
+  font-size: 16px;
+  text-align: center;
+  outline: none;
+  margin-top: 15px; /* Аккуратный отступ между полями ввода */
+  box-sizing: border-box;
+}
+
+.menu-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 10px;
+}
+.menu-btn {
+  background-color: #008000;
+  color: white;
+  border: 4px solid #015b01;
+  padding: 12px 20px;
+  border-radius: 15px;
+  font-weight: bold;
+  font-size: 16px;
+  margin: 8px;
+  width: 260px;
+}
+.menu-btn:active {
+  background-color: #016b01;
+}
+.lobby-list {
+  background-color: rgba(0, 0, 0, 0.4);
+  border: 1px solid #444;
+  border-radius: 8px;
+  width: 260px;
+  padding: 15px;
+  margin-top: 25px;
+}
+.lobby-list h3 {
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+.lobby-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+  font-size: 13px;
+}
+.join-btn {
+  background-color: #008000;
+  color: white;
+  border: 2px solid #015b01;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-weight: bold;
+}
+.join-btn:active {
+  background-color: #016b01;
+}
+.rules-list {
+  width: 100%;
+  max-width: 320px;
+  background-color: rgba(0, 0, 0, 0.4);
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 20px;
+}
+.rule-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px solid #333;
+  font-size: 14px;
+}
+.rule-item:last-child {
+  border-bottom: none;
+}
+
+/* --- ИГРОВОЙ ЭКРАН --- */
+
+.info {
+  background-color: #008000;
+  margin: 20px 15px;
+  border: 6px solid #016b01;
+  border-radius: 6px;
+  color: #fff;
+  padding: 10px;
+  border-left: 9px solid #014e01;
+}
+
+/* Баланс в самом верху */
+.ball {
+  color: #fff;
+  padding-left: 15px;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+/* Контейнер-арена для стола и игроков */
+.avatar {
+  position: relative;
+  width: 340px;
+  height: 230px;
+  margin: 30px auto 10px auto; 
+}
+
+/* Сам покерный стол внутри арены */
+.pok {
+  background-color: #1b5e20;
+  height: 150px;
+  width: 280px;
+  border: 12px solid #3e2723;
+  border-radius: 1000px;
+  box-shadow: 0 15px 30px rgba(0,0,0,0.5), inset 0 0 50px rgba(0,0,0,0.4);
+  position: absolute;
+  top: 40px;
+  left: 30px;
+}
+
+/* Плашки игроков */
+.van, .ty, .fri, .fo {
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.75);
+  border-radius: 6px;
+  text-align: center;
+  padding: 6px 10px;
+  color: #c9c9c9;
+  font-size: 12px;
+  z-index: 10;
+  min-width: 80px;
+  transform: translateX(-50%); 
+}
+.rask {
+  color: #fff;
+  font-weight: bold;
+}
+
+/* Позиционирование игроков относительно краев стола */
+.fo {   
+  top: 0px;
+  left: 50%;
+}
+.fri {  
+  bottom: 0px;
+  left: 50%;
+}
+.van {  
+  top: 95px;
+  left: 40px;
+}
+.ty {   
+  top: 95px;
+  left: 300px;
+}
+
+/* Карты на столе */
+.table-cards {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  height: 100%;
+}
+.card {
+  width: 32px;
+  height: 46px;
+  background-color: #c9c9c9;
+  border-radius: 4px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: sans-serif;
+  font-weight: bold;
+  font-size: 13px;
+  color: #000000;
+}
+.card.red {
+  color: #d32f2f;
+}
+
+/* Карты в руке игрока */
+.cardpp {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  height: 110px;
+  margin-top: 10px;
+}
+.cardp {
+  width: 60px;
+  height: 90px;
+  background-color: #c9c9c9;
+  border-radius: 6px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: sans-serif;
+  font-weight: bold;
+  font-size: 24px;
+  color: #000000;
+}
+.cardp.red {
+  color: #d32f2f;
+}
+
+/* Блок нижних кнопок управления */
+.game-buttons-container {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 10px;
+  margin-top: 15px;
+  width: 100%;
+}
+
+.chec, .pas, .va, .ces {
+  background-color: #008000;
+  height: 65px;
+  width: 80px;
+  border-radius: 12px;
+  border: 4px solid #015b01;
+  color: #fff;
+  font-weight: bold;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+.chec:active, .pas:active, .va:active, .ces:active {
+  background-color: #016b01;
+  color: #b8b8b8;
+}
+
+.bet-slider-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin-top: 10px;
+  padding: 0 25px;
+  color: #fff;
+  font-family: sans-serif;
+}
+
+#bet-amount-display {
+  font-size: 15px;
+  font-weight: bold;
+  margin-bottom: 5px;
+  background-color: #2c2c2c;
+  padding: 4px 12px;
+  border-radius: 10px;
+  border: 1px solid #444;
+}
+
+#bet-range {
+  width: 100%;
+  accent-color: #008000; 
+  cursor: pointer;
+}
+
+/* --- АДМИН-ПАНЕЛЬ --- */
+
+/* Кнопка удаления комнаты в админ-панели */
+.delete-room-btn {
+  background-color: #ff3333;
+  border: 2px solid #cc0000;
+  color: white;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-weight: bold;
+  font-size: 12px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+}
+.delete-room-btn:active {
+  background-color: #cc0000;
+}
+
+/* Элемент списка в админке */
+.admin-room-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #222;
+  padding: 10px 15px;
+  border-radius: 10px;
+  margin-bottom: 8px;
+  border: 1px solid #333;
+  color: #fff;
+  font-family: sans-serif;
+}
+
+/* Ссылка на админку внизу главного меню */
+#open-admin-btn {
+  background: none;
+  border: none;
+  color: #666; /* Сделали более читаемым на темном фоне */
+  margin-top: 30px;
+  margin-bottom: 10px;
+  font-size: 13px;
+  cursor: pointer;
+  text-decoration: underline; 
+}
+
+/* Глобальный сброс синей мобильной подсветки для всех кнопок */
+button {
+  -webkit-tap-highlight-color: transparent !important;
+  outline: none !important;
+}
